@@ -1,0 +1,60 @@
+﻿@model HomeCalcViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-start">
+
+    <form action="/home/calc" method="post">
+
+        <div class="mb-3">
+            <label for="num1" class="form-label">Высота слоя, м</label>
+            <input type="text" name="model.Num1" class="form-control" id="num1" value="@Model.Num1" placeholder="Например: 6">
+        </div>
+
+        <div class="mb-3">
+            <label for="num2" class="form-label">Начальная температура материала, С</label>
+            <input type="text" name="model.Num2" class="form-control" id="num2" value="@Model.Num2" placeholder="Например: 750">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num3" class="form-label">Начальная температура газа, С</label>
+            <input type="text" name="model.Num3" class="form-control" id="Num3" value="@Model.Num3" placeholder="Например: 30">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num4" class="form-label">Скорость газа на свободное сечение шахты, м/с</label>
+            <input type="text" name="model.Num4" class="form-control" id="Num4" value="@Model.Num4" placeholder="Например: 0,5">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num5" class="form-label">Средняя теплоемкость газа, кДж/(м^3 * К)</label>
+            <input type="text" name="model.Num5" class="form-control" id="Num5" value="@Model.Num5" placeholder="Например: 1,32">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num6" class="form-label">Расход материалов, кг/с</label>
+            <input type="text" name="model.Num6" class="form-control" id="Num6" value="@Model.Num6" placeholder="Например: 1,72">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num7" class="form-label">Теплоемкость материалов, кДж/(кг * К)</label>
+            <input type="text" name="model.Num7" class="form-control" id="Num7" value="@Model.Num7" placeholder="Например: 1,49">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num8" class="form-label">Объемный коэффициент теплоотдачи, Вт/(м^3 * К)</label>
+            <input type="text" name="model.Num8" class="form-control" id="Num8" value="@Model.Num8" placeholder="Например: 2460">
+        </div>
+
+        <div class="mb-3">
+            <label for="Num9" class="form-label">Диаметр аппарата, м</label>
+            <input type="text" name="model.Num9" class="form-control" id="Num9" value="@Model.Num9" placeholder="Например: 2,3">
+        </div>
+
+        <button class=" btn btn-primary">Записать данные</button>
+
+        <a href="/" class="btn btn-primary">Домой</a>
+    </form>
+
+</div>

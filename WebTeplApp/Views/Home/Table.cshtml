@@ -1,0 +1,142 @@
+﻿@model HomeCalcViewModel
+
+<form action="/home/table" method="post">
+    @{
+        double? columnValue = Model.Num1; 
+        double? columnCount = (columnValue * 2) + 1; 
+        string[] rowHeaders = { "t", "T", "Разность температур, 0С" };
+        double? step = 0.5;
+
+        int length = (int)(columnCount);
+
+        int lenght2 = (int)((columnValue/step) + 1);
+
+        double?[] y = new double?[lenght2];
+        for (int i = 0; i < lenght2; i++)
+        {
+            y[i] = i * step;
+        }
+
+        double? first = Model.Num1;
+        double? second = Model.Num2;
+        double? third = Model.Num3;
+        double? fourth = Model.Num4;
+        double? fifth = Model.Num5;
+        double? sixth = Model.Num6;
+        double? seventh = Model.Num7;
+        double? eighth = Model.Num8;
+        double? ninth = Model.Num9;
+
+        double?[] Y = new double?[length];
+        double?[] secondrow = new double?[length];
+        double?[] thirdrow = new double?[length];
+        double?[] fourthrow = new double?[length];
+        double?[] fifthrow = new double?[length];
+        double?[] t = new double?[length]; ///на вывод
+        double?[] T = new double?[length]; /// на вывод
+        double?[] razn = new double?[length]; /// на вывод
+
+        double m = (double)((seventh*sixth) / (fifth*fourth*(Math.PI * ((ninth*ninth)/4))));
+
+        double Y0 = (double)((eighth*first)/(fourth * fifth * 1000));
+
+        for (int i = 0; i <= length - 1; i ++)
+        {
+            Y[i] = (double)((eighth * y[i]) / (fourth * fifth * 1000));
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            secondrow[i] = (1 - Math.Exp((double)(( (m - 1) * Y[i] ) / m) ));
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            thirdrow[i] = (1 - m * Math.Exp((double)(( (m - 1) * Y[i]) / m) ));
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            fourthrow[i] = secondrow[i] / (1 - m * Math.Exp((double)(((m - 1) * Y0) / m)));
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            fifthrow[i] = thirdrow[i] / (1 - m * Math.Exp((double)(((m - 1) * Y0) / m)));
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            t[i] = second + (third - second) * fourthrow[i];
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            T[i] = second + (third - second) * fifthrow[i];
+        }
+
+        for (int i = 0; i <= length - 1; i++)
+        {
+            razn[i] = t[i] - T[i];
+        }
+
+
+    }
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+            margin: 0; 
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+    <table>
+        <thead>
+            <tr>
+                <th>y</th>
+                @for (double i = 0; i <= columnValue; i += 0.5)
+                {
+                    <th>@i</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int row = 0; row < rowHeaders.Length; row++)
+            {
+                <tr>
+                    <td>@rowHeaders[row]</td>
+                    @for (int col = 0; col < length; col++) // Используем length, так как это длина массивов t, T, razn
+                    {
+                        <td>
+                            @if (row == 0)
+                            {
+                                @(Math.Round((double)t[col], 4))
+                                // Первая строка (t), округление до 4 знаков
+                            }
+                            else if (row == 1)
+                            {
+                                @(Math.Round((double)T[col], 4))
+                                // Вторая строка (T), округление до 4 знаков
+                            }
+                            else if (row == 2)
+                            {
+                                @(Math.Round((double)razn[col], 4))
+                                // Третья строка (Разность температур), округление до 4 знаков
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/" class="btn btn-primary">Домой</a>
+
+</form>
