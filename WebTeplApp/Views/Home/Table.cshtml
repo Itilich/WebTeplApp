@@ -3,8 +3,8 @@
 <form action="/home/table" method="post">
     @{
         double? columnValue = Model.Num1; 
-        double? columnCount = (columnValue * 2) + 1; 
-        string[] rowHeaders = { "t", "T", "Разность температур, 0С" };
+        double? columnCount = (columnValue * 2) + 1;
+        string[] rowHeaders = { "Температура газа, °C", "Температура материала, °C", "Разность температур, °C" };
         double? step = 0.5;
 
         int length = (int)(columnCount);
@@ -100,7 +100,7 @@
     <table>
         <thead>
             <tr>
-                <th>y</th>
+                <th>Параметры\Высота слоя, м</th>
                 @for (double i = 0; i <= columnValue; i += 0.5)
                 {
                     <th>@i</th>
@@ -112,23 +112,23 @@
             {
                 <tr>
                     <td>@rowHeaders[row]</td>
-                    @for (int col = 0; col < length; col++) // Используем length, так как это длина массивов t, T, razn
+                    @for (int col = 0; col < length; col++) 
                     {
                         <td>
                             @if (row == 0)
                             {
-                                @(Math.Round((double)t[col], 4))
-                                // Первая строка (t), округление до 4 знаков
+                                @(Math.Round((double)t[col], 0))
+                                
                             }
                             else if (row == 1)
                             {
-                                @(Math.Round((double)T[col], 4))
-                                // Вторая строка (T), округление до 4 знаков
+                                @(Math.Round((double)T[col], 0))
+                                
                             }
                             else if (row == 2)
                             {
-                                @(Math.Round((double)razn[col], 4))
-                                // Третья строка (Разность температур), округление до 4 знаков
+                                @(Math.Round((double)razn[col], 0))
+                               
                             }
                         </td>
                     }
@@ -137,6 +137,116 @@
         </tbody>
     </table>
 
-    <a href="/" class="btn btn-primary">Домой</a>
+    <div class="charts-container">
+        
+        <div class="chart-box">
+            <canvas id="chart1"></canvas>
+        </div>
+        
+        <div class="chart-box">
+            <canvas id="chart2"></canvas>
+        </div>
+    </div>
 
+    <a href="/" class="btn btn-primary">Домой</a>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        
+        const y = @Html.Raw(Json.Serialize(y.Select(value => Math.Round((double)value, 0))));
+        const t = @Html.Raw(Json.Serialize(t.Select(value => Math.Round((double)value, 0))));
+        const T = @Html.Raw(Json.Serialize(T.Select(value => Math.Round((double)value, 0))));
+        const razn = @Html.Raw(Json.Serialize(razn.Select(value => Math.Round((double)value, 0))));
+
+        
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: y, 
+                datasets: [
+                    {
+                        label: 'Температура газа',
+                        data: t, 
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 2,
+                        fill: false,
+                    },
+                    {
+                        label: 'Температура материала',
+                        data: T, 
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderWidth: 2,
+                        fill: false,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Температура газа и материала'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Высота слоя (м)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Температура (°C)'
+                        }
+                    }
+                }
+            }
+        });
+
+        
+        const ctx2 = document.getElementById('chart2').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: y, 
+                datasets: [
+                    {
+                        label: 'Разность температур',
+                        data: razn, 
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        fill: false,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Разность температур'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Высота слоя (м)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Разность температур (°C)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </form>
