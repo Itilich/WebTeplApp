@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using WebTeplApp.Data;
 using WebTeplApp.Models;
 
@@ -20,7 +21,7 @@ namespace WebTeplApp.Controllers
 
         public IActionResult Index()
         {
-            var varisants = _context.Variants.ToList();
+            var varisants = _context.Variants.Where(x => x.UserId == null || x.UserId == GetUserId()).ToList();
 
             return View(varisants);
         }
@@ -28,7 +29,7 @@ namespace WebTeplApp.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var variant = _context.Variants.FirstOrDefault(x => x.Id == id);
+            var variant = _context.Variants.FirstOrDefault(x => x.Id == id && x.UserId == GetUserId() || x.UserId == null);
 
             if (variant != null)
             {
@@ -42,7 +43,7 @@ namespace WebTeplApp.Controllers
         [HttpGet]
         public IActionResult Table(int id)
         {
-            var variant = _context.Variants.FirstOrDefault(x => x.Id == id);
+            var variant = _context.Variants.FirstOrDefault(x => x.Id == id && x.UserId == GetUserId() || x.UserId == null);
             var viewModel = new HomeCalcViewModel();
 
             if (variant != null)
@@ -95,6 +96,7 @@ namespace WebTeplApp.Controllers
 
             _context.Variants.Add(new Variant 
             { 
+                UserId = GetUserId(),
                 Num1 = model.Num1,
                 Num2 = model.Num2,
                 Num3 = model.Num3,
@@ -109,6 +111,16 @@ namespace WebTeplApp.Controllers
             _context.SaveChanges();
 
             return View(viewModel);
+        }
+
+        private int? GetUserId()
+        {
+
+            var userIdStr = User.FindFirst("UserId")?.Value;
+            int? userId = userIdStr == null ? null : int.Parse(userIdStr);
+
+            return userId;
+
         }
         [HttpGet]
        

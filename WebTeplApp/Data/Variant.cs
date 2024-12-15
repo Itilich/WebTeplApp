@@ -6,6 +6,7 @@ namespace WebTeplApp.Data
     {
         [Key]
         public int Id { get; set; }
+        public int? UserId { get; set; }
 
         public double Num1 { get; set; }
 
